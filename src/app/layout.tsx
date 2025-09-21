@@ -1,22 +1,26 @@
 import { type Metadata } from 'next'
-import { ClerkProvider, SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { ClerkProvider } from '@clerk/nextjs'
+import { Geist, Geist_Mono, Public_Sans } from 'next/font/google'
 import './globals.css'
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const publicSans = Public_Sans({
+  variable: '--font-public-sans',
   subsets: ['latin'],
-})
+  weight: ['400', '500', '600'],
+});
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-})
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  minimumScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+}
 
 export const metadata: Metadata = {
   title: 'Social Hop',
-  description: 'Social hope',
+  description: 'A social media management tool to help you manage all your social media accounts in one place.',
 }
 
 export default function RootLayout({
@@ -27,9 +31,7 @@ export default function RootLayout({
   return (
     <ClerkProvider
       appearance={{
-        elements: {
-          card: "my-cl-card-no-shadow",
-        },
+        theme: 'simple',
         signIn: {
           variables: { colorPrimary: "#F9AA11" },
         },
@@ -38,7 +40,7 @@ export default function RootLayout({
         },
       }}>
       <html lang="en">
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <body className={publicSans.className}>
           <AntdRegistry>{children}</AntdRegistry>
         </body>
       </html>

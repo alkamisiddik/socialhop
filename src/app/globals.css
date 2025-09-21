@@ -30,9 +30,17 @@ body {
     height: 3rem;
 }
 
-.my-cl-card-no-shadow {
+.cl-cardBox {
+  box-shadow: none;
+  border: none !important;
+}
+
+.cl-cardFooter {
+  border: none !important;
+  background: transparent !important;
   box-shadow: none !important;
 }
+
 /* width */
 ::-webkit-scrollbar {
     width: 2px;

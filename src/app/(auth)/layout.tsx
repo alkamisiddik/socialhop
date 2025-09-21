@@ -18,8 +18,8 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
         <div className="hidden md:flex flex-1 items-center justify-center bg-[var(--primary)]">
           <Image
             alt="Auth Image"
-            width={500}
-            height={500}
+            width={400}
+            height={400}
             quality={100}
             src={"/images/auth.png"}
             className="w-full h-auto max-w-sm"
