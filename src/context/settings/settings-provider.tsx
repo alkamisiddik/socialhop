@@ -4,7 +4,7 @@ import { SettingsContext } from "./settings-context";
 
 export function SettingsContextProvider({ children }: { children: React.ReactNode }) {
   const [settings, setSettings] = useState({
-    theme: "dark",
+    theme: "light",
     isSidebarOpen: false,
   });
 

@@ -19,7 +19,7 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
                     <div className='fixed top-[85px] min-h-[calc(100vh-90px)] min-w-full flex flex-col overflow-auto'>
                         <Header />
 
-                        <div className='flex gap-4 p-4 flex-grow max-[440px]:p-2'>
+                        <div className='flex gap-4 flex-grow max-[440px]:p-2'>
                             <Sidebar/>
                         </div>
                     </div>

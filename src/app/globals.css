@@ -31,14 +31,14 @@ body {
 }
 
 .cl-cardBox {
-  box-shadow: none;
-  border: none !important;
+    box-shadow: none;
+    border: none !important;
 }
 
 .cl-cardFooter {
-  border: none !important;
-  background: transparent !important;
-  box-shadow: none !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
 }
 
 /* width */
