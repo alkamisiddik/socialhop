@@ -14,20 +14,24 @@
     "@ant-design/nextjs-registry": "^1.1.0",
     "@clerk/nextjs": "^6.32.0",
     "@iconify/react": "^6.0.2",
+    "@prisma/client": "^6.16.2",
     "antd": "^5.27.4",
     "next": "15.5.3",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "svix": "^1.76.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^20.19.17",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.5.3",
+    "prisma": "^6.16.2",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
   }
 }
