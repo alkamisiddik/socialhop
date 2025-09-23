@@ -1,8 +1,10 @@
 import { type Metadata } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
-import { Geist, Geist_Mono, Public_Sans } from 'next/font/google'
+import { Public_Sans } from 'next/font/google'
 import './globals.css'
+import '@ant-design/v5-patch-for-react-19';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
+import QueryProvider from '@/lib/QueryProvider';
 
 const publicSans = Public_Sans({
   variable: '--font-public-sans',
@@ -41,7 +43,9 @@ export default function RootLayout({
       }}>
       <html lang="en">
         <body className={publicSans.className}>
-          <AntdRegistry>{children}</AntdRegistry>
+          <QueryProvider>
+            <AntdRegistry>{children}</AntdRegistry>
+          </QueryProvider>
         </body>
       </html>
     </ClerkProvider>

@@ -38,7 +38,7 @@ const Header = () => {
                         <ModeButton />
 
                         {/* user button */}
-                        <UserButton appearance={userButtonAppearance} afterSignOutUrl='/sign-in' />
+                        <UserButton appearance={userButtonAppearance} forceRedirectUrl='/sign-in' />
                     </Flex>
                 </div>
             </Box>

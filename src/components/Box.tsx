@@ -2,11 +2,10 @@
 import { theme } from "antd";
 import React from "react";
 const { useToken } = theme;
-const Box = ({ children, type = "boxBg", style, className = "", ...other }) => {
+const Box = ({ children, type = "boxBg", style, ...other }) => {
   const { token } = useToken();
   return (
     <div
-      className={className}
       {...other}
       style={{
         backgroundColor: token[type],
