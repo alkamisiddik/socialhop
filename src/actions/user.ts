@@ -1,45 +1,52 @@
+// app/actions/user.ts
 "use server";
 
-import { db } from "@/lib/db";
+import prisma from "@/lib/db";
 
-export const createUser = async (user) => {
-  const { id, first_name, last_name, email_address, image_url, username } = user;
+// create or update user
+export const upsertUser = async (clerkUser: any) => {
   try {
-    const userExists = await db.user.findUnique({ where: { id } });
+    const {
+      id,
+      first_name,
+      last_name,
+      image_url,
+      username,
+      email_addresses,
+    } = clerkUser;
 
-    if (userExists) {
-      await updateUser(user);
-      return { message: "User updated in db" };
-    }
+    // Clerk sends email_addresses as an array
+    const email_address = email_addresses?.[0]?.email_address ?? null;
 
-    await db.user.create({
-      data: { id, first_name, last_name, email_address, image_url, username },
-    });
-
-    return { message: "New user created in db" };
-  } catch (e) {
-    console.error(e);
-    return { error: "Failed to save new user in db" };
-  }
-};
-
-export const updateUser = async (user) => {
-  const { id, first_name, last_name, email_address, image_url, username } = user;
-  try {
-    await db.user.update({
+    const user = await prisma.user.upsert({
       where: { id },
-      data: { first_name, last_name, email_address, image_url, username },
+      update: {
+        first_name,
+        last_name,
+        email_address,
+        image_url,
+        username,
+      },
+      create: {
+        id,
+        first_name,
+        last_name,
+        email_address,
+        image_url,
+        username,
+      },
     });
-    return { message: "User updated in db" };
+
+    return { data: user, message: "User upserted successfully" };
   } catch (e) {
-    console.error(e);
-    return { error: "Failed to update user in db" };
+    console.error("upsertUser error:", e);
+    return { error: "Failed to upsert user" };
   }
 };
 
 export const getUser = async (id: string) => {
   try {
-    const user = await db.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: { id },
       select: {
         id: true,
@@ -54,17 +61,17 @@ export const getUser = async (id: string) => {
     });
     return { data: user };
   } catch (e) {
-    console.error(e);
+    console.error("getUser error:", e);
     return { error: "Failed to fetch user" };
   }
 };
 
 export const deleteUser = async (id: string) => {
   try {
-    await db.user.delete({ where: { id } });
+    await prisma.user.delete({ where: { id } });
     return { message: "User deleted in db" };
   } catch (e) {
-    console.error(e);
-    return { error: "Failed to delete user in db" };
+    console.error("deleteUser error:", e);
+    return { error: "Failed to delete user" };
   }
 };

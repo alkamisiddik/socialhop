@@ -1,12 +1,14 @@
 import PostGenerator from '@/components/PostGenerator'
 import React from 'react'
+import Posts from '@/components/Posts'
 
 const HomeView = () => {
   return (
-    <div className="rounded-2xl flex flex-col lg:flex-row justify-center-safe gap-40 !px-0">
+    <div className="max-h-screen rounded-2xl flex flex-col lg:flex-row overflow-auto justify-center-safe gap-40 !px-0">
       {/* Main feed */}
       <div className="flex-1 flex flex-col max-w-[55rem] mx-auto gap-4">
         <PostGenerator />
+        <Posts />
       </div>
 
       {/* Sidebar (hidden on small, visible on large) */}
