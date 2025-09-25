@@ -1,7 +1,9 @@
 "use server";
 import { uploadFile } from './uploadFile';
 import prisma from "@/lib/db";
+import { checkPostForTrends } from '@/utils';
 import { currentUser } from "@clerk/nextjs/server";
+import { connect } from 'http2';
 
 export const createPost = async (post) => {
     try {
@@ -21,7 +23,7 @@ export const createPost = async (post) => {
                 throw new Error("File upload failed");
             }
             cld_id = res.public_id;
-      assetUrl = res.secure_url;
+            assetUrl = res.secure_url;
         }
 
         const newPost = await prisma.post.create({
@@ -36,7 +38,13 @@ export const createPost = async (post) => {
                 }
             }
         })
-        console.log("Post created: ", newPost);
+
+        const trends = checkPostForTrends(postText)
+
+        if(trends.length > 0){
+            createTrends(trends, newPost.id)
+        }
+
         return {
             data: newPost
         }
@@ -47,6 +55,22 @@ export const createPost = async (post) => {
     }
 }
 
+export const createTrends = async (trends, postId) => {
+  try {
+    const newTrends = await prisma.trend.createMany({
+      data: trends.map((trend) => ({
+        name: trend,
+        postId: postId,
+      })),
+    });
+    return {
+      data: newTrends,
+    };
+  } catch (e) {
+    throw e;
+  }
+};
+
 export const getMyFeedPosts = async (lastCursor?: string) => {
     try {
         const take = 5
@@ -54,6 +78,12 @@ export const getMyFeedPosts = async (lastCursor?: string) => {
         const posts = await prisma.post.findMany({
             include: {
                 author: true,
+                likes: true,
+                comments: {
+                    include: {
+                        author: true
+                    }
+                }
             },
             take,
             ...(lastCursor && {
@@ -64,8 +94,6 @@ export const getMyFeedPosts = async (lastCursor?: string) => {
             }),
             orderBy: { createdAt: 'desc' }
         });
-
-        console.log(posts);
 
         if (posts.length === 0) {
             return {
@@ -96,5 +124,111 @@ export const getMyFeedPosts = async (lastCursor?: string) => {
     } catch (error) {
         console.log("Error fetching posts: ", error);
         throw new Error("Error fetching posts");
+    }
+}
+
+export const updatePostLike = async (params) => {
+    const { postId, actionType } = params
+    try {
+        const { id: userId } = await currentUser();
+
+        // find post in the db
+        const post = await prisma.post.findUnique({
+            where: {
+                id: postId,
+            },
+            include: {
+                likes: true
+            }
+        })
+
+        if (!post) {
+            return {
+                error: "Post not found",
+            }
+        }
+
+        // check if user has already liked the post or not
+        const like = post.likes.find((like) => like.authorId === userId);
+        if (like) {
+            if (actionType === 'like') {
+                return {
+                    data: post
+                }
+            } else {
+                await prisma.like.delete({
+                    where: {
+                        id: like.id
+                    }
+                })
+                console.log("like deleted")
+            }
+        } else {
+            if (actionType === 'unlike') {
+                return {
+                    data: post
+                }
+            } else {
+                await prisma.like.create({
+                    data: {
+                        post: {
+                            connect: {
+                                id: postId
+                            }
+                        },
+                        author: {
+                            connect: {
+                                id: userId
+                            }
+                        }
+                    }
+                })
+            }
+        }
+
+        const updatedPost = await prisma.post.findUnique({
+            where: {
+                id: postId
+            },
+            include: {
+                likes: true,
+            }
+        })
+
+        return {
+            data: updatedPost
+        }
+
+    } catch (error) {
+        console.log(error);
+        throw new Error("Failed to update the post likes");
+    }
+}
+
+export const addComment = async (postId, comment) => {
+    try {
+        const { id: userId } = await currentUser();
+        const newComment = await prisma.comment.create({
+            data: {
+                comment,
+                post: {
+                    connect: {
+                        id: postId
+                    }
+                },
+                author: {
+                    connect: {
+                        id: userId
+                    }
+                }
+            }
+        })
+
+        return {
+            data: newComment
+        }
+    } catch (e) {
+        console.log(e);
+        throw new Error("Failed to add comment");
     }
 }

@@ -4,9 +4,15 @@ import React from 'react'
 import Box from './Box'
 import { getFileTypeFromUrl } from '@/utils'
 import Image from 'next/image'
+import LikeButton from './LikeButton'
+import CommentButton from './CommentButton'
+import CommentSection from './CommentSection'
 
-const Post = ({ data }) => {
+const Post = ({ data, queryId }) => {
     const fileType = getFileTypeFromUrl(data?.media);
+    const postId = data?.id;
+    const likes = data?.likes;
+
     return (
         <div className='rounded-xl overflow-hidden'>
             <Box>
@@ -47,12 +53,11 @@ const Post = ({ data }) => {
 
                     {/* Post Media */}
                     {fileType === "image" && data?.media && (
-                        <div className="relative w-full h-[350px] rounded-md overflow-hidden">
+                        <div className="relative w-full h-[450px] rounded-md overflow-hidden">
                             <Image
                                 src={data.media}
                                 alt="post media"
                                 fill
-                                style={{ objectFit: "cover" }}
                             />
                         </div>
                     )}
@@ -69,7 +74,24 @@ const Post = ({ data }) => {
                         <Typography.Text type="secondary">Unsupported file type</Typography.Text>
                     )}
 
-                    
+                    {/* Actions */}
+                    <Flex>
+                        <LikeButton
+                            postId={postId}
+                            likes={likes}
+                            queryId={queryId}
+                        />
+
+                        <CommentButton comments={data?.comments?.length} />
+                    </Flex>
+
+                    {/* Comment Sections */}
+
+                    <CommentSection
+                        comments={data?.comments}
+                        postId={data?.id}
+                        queryId={queryId}
+                    />
                 </div>
             </Box>
         </div>

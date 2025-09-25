@@ -6,10 +6,10 @@ import React, { useEffect } from 'react'
 import { useInView } from 'react-intersection-observer';
 import Post from '@/components/Post'
 
-const Posts = () => {
+const Posts = ({id = "all"}) => {
     const { ref, inView } = useInView()
     const { data, isLoading, isError, isSuccess, hasNextPage, fetchNextPage, isFetchingNextPage, isFetching } = useInfiniteQuery({
-        queryKey: ["posts"],
+        queryKey: ["posts", id],
         queryFn: ({ pageParam  = "" }) => getMyFeedPosts(pageParam ),
         getNextPageParam: (lastPage) => {
             return lastPage?.metadata?.lastCursor
@@ -52,13 +52,13 @@ const Posts = () => {
                                 key={post?.id}
                                 ref={ref}
                             >
-                                <Post data={post}/>
+                                <Post data={post} queryId={id}/>
                             </div>
                         ) : (
                             <div
                                 key={post?.id}
                             >
-                                <Post data={post}/>
+                                <Post data={post} queryId={id}/>
                             </div>
                         )
                     )
