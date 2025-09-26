@@ -41,7 +41,7 @@ export const createPost = async (post) => {
 
         const trends = checkPostForTrends(postText)
 
-        if(trends.length > 0){
+        if (trends.length > 0) {
             createTrends(trends, newPost.id)
         }
 
@@ -54,22 +54,6 @@ export const createPost = async (post) => {
         throw new Error("Error creating post");
     }
 }
-
-export const createTrends = async (trends, postId) => {
-  try {
-    const newTrends = await prisma.trend.createMany({
-      data: trends.map((trend) => ({
-        name: trend,
-        postId: postId,
-      })),
-    });
-    return {
-      data: newTrends,
-    };
-  } catch (e) {
-    throw e;
-  }
-};
 
 export const getMyFeedPosts = async (lastCursor?: string) => {
     try {
@@ -232,3 +216,67 @@ export const addComment = async (postId, comment) => {
         throw new Error("Failed to add comment");
     }
 }
+
+export const createTrends = async (trends, postId) => {
+    try {
+        const newTrends = await prisma.trend.createMany({
+            data: trends.map((trend) => ({
+                name: trend,
+                postId: postId,
+            })),
+        });
+        return {
+            data: newTrends,
+        };
+    } catch (e) {
+        throw e;
+    }
+};
+
+export const getPopularTrends = async () => {
+    try {
+        const trends = await prisma.trend.groupBy({
+            by: ["name"],
+            _count: {
+                name: true,
+            },
+            orderBy: {
+                _count: {
+                    name: "desc",
+                },
+            },
+            take: 3,
+        });
+        return {
+            data: trends,
+        };
+    } catch (e) {
+        throw e;
+    }
+};
+
+export const deletePost = async (postId) => {
+    try {
+        const { id: userId } = await currentUser();
+        const post = await prisma.post.findUnique({
+            where: {
+                id: postId,
+            },
+        });
+        if (post.authorId !== userId) {
+            return {
+                error: "You are not authorized to delete this post",
+            };
+        }
+        await prisma.post.delete({
+            where: {
+                id: postId,
+            },
+        });
+        return {
+            data: "Post deleted",
+        };
+    } catch (e) {
+        throw e;
+    }
+};

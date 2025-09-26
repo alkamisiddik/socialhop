@@ -1,4 +1,4 @@
-export const sidebarRoute = () => [
+export const sidebarRoute = (user) => [
     {
         name: "home",
         icon: "eva:home-fill",
@@ -7,7 +7,7 @@ export const sidebarRoute = () => [
     {
         name: "My profile",
         icon: "bi:person-fill",
-        route: `/profile`,
+        route: `/profile/${user?.id}`,
     },
     {
         name: "messages",

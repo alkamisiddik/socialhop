@@ -5,7 +5,7 @@ import Link from "next/link"
 import React, { useCallback, useEffect, useState } from 'react'
 import Box from './Box'
 import { useRouter, usePathname } from 'next/navigation'
-import { useClerk } from '@clerk/nextjs'
+import { useClerk, useUser } from '@clerk/nextjs'
 import { Typography } from 'antd'
 import SidebarContainer from './SidebarContainer'
 import { useSettingsContext } from '@/context/settings/settings-context'
@@ -14,12 +14,15 @@ const Sidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
   const { signOut } = useClerk();
-  const [mounted, setMounted ] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const { user } = useUser();
+
+  console.log(user);
 
   useEffect(() => {
     setMounted(true);
   }, []);
-  
+
   // Common classes for all sidebar items
   const itemClasses = "flex items-center gap-4 !px-6 !py-4 rounded-[5px] capitalize no-underline font-semibold transition-colors duration-200 hover:cursor-pointer hover:bg-[var(--primary-low)]";
   const {
@@ -40,9 +43,9 @@ const Sidebar = () => {
         <div className="pt-[72px] min-w-[18rem] rounded-2xl overflow-hidden flex min-h-[88vh]">
           <Box className="flex flex-col gap-2 w-full !p-2">
             {/* Sidebar routes */}
-            {sidebarRoute().map((route, index) => (
+            {sidebarRoute(user).map((route, index) => (
               <Link
-                href={route.route}
+                href={route.route === `/profile/${user?.id}` ? `${route.route}?person=${user?.firstName}` : `${route.route}`}
                 key={index}
                 className={`${itemClasses} ${pathname === route.route ? "bg-[var(--primary-low)]" : ""}`}
               >

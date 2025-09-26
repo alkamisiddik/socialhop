@@ -6,7 +6,6 @@ import dayjs from 'dayjs'
 
 const Comment = ({ data }) => {
     const { settings: { theme } } = useContext(SettingsContext)
-    console.log(data)
     return (
         <Box>
             <Flex gap={".5rem"} align='center'>
