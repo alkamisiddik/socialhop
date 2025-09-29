@@ -3,6 +3,8 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getUser } from "@/actions/user";
 import ProfileHead from "../ProfileHead";
+import ProfileBody from "../ProfileBody";
+import FollowPersonsBody from "../FollowPersonsBody";
 const ProfileView = ({ userId }) => {
     const { data, isLoading, isError } = useQuery({
         queryKey: ["user", userId],
@@ -22,7 +24,7 @@ const ProfileView = ({ userId }) => {
                     setSelectedTab={setSelectedTab}
                 />
 
-                {/* body
+                {/* body */}
                 {selectedTab === "1" && (
                     <ProfileBody
                         userId={userId}
@@ -40,7 +42,7 @@ const ProfileView = ({ userId }) => {
                     selectedTab === "3" && (
                         <FollowPersonsBody type={"following"} id={userId} />
                     )
-                } */}
+                }
             </div>
         </div>
     );
